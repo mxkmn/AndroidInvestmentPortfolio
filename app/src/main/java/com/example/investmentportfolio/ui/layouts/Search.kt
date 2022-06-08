@@ -106,39 +106,53 @@ class Search {
       shape = MaterialTheme.shapes.extraLarge,
       onClick = { onStockClick(stock) }
     ) {
-      Row(
-        modifier = Modifier
+      Column(
+        Modifier
+          .fillMaxWidth()
           .padding(16.dp)
-          .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
       ) {
-        Column (
-          verticalArrangement = Arrangement.Center,
-        ) {
-          Text(
-            text = stock.name,
-            style = MaterialTheme.typography.titleLarge,
-//            modifier = Modifier
-//              .align(Alignment.Start)
-//              .padding(end = 48.dp), // TODO: remove this hack
-          )
-          Text(
-            text = "$${stock.ticker}",
-            style = MaterialTheme.typography.titleSmall,
-//            modifier = Modifier
-//              .align(Alignment.Start)
-//              .padding(end = 48.dp), // TODO: remove this hack
-          )
-        }
-        Column (
-//          Modifier.fillMaxHeight(),
-//          verticalArrangement = Arrangement.Center
-        ) {
-          Text(
-            text = getStrPrice(stock.priceInCents),
-            style = MaterialTheme.typography.titleMedium,
-          )
-        }
+        Text(
+          text = "${stock.name} | $${stock.ticker}",
+          style = MaterialTheme.typography.titleLarge
+        )
+        Text(
+          text = getStrPrice(stock.priceInCents),
+          style = MaterialTheme.typography.titleMedium
+        )
+      }
+//      Row(
+//        modifier = Modifier
+//          .padding(16.dp)
+//          .fillMaxWidth(),
+//        horizontalArrangement = Arrangement.SpaceBetween,
+//      ) {
+//        Column (
+//          verticalArrangement = Arrangement.Center,
+//        ) {
+//          Text(
+//            text = stock.name,
+//            style = MaterialTheme.typography.titleLarge,
+////            modifier = Modifier
+////              .align(Alignment.Start)
+////              .padding(end = 48.dp), // TODO: remove this hack
+//          )
+//          Text(
+//            text = "$${stock.ticker}",
+//            style = MaterialTheme.typography.titleSmall,
+////            modifier = Modifier
+////              .align(Alignment.Start)
+////              .padding(end = 48.dp), // TODO: remove this hack
+//          )
+//        }
+//        Column (
+////          Modifier.fillMaxHeight(),
+////          verticalArrangement = Arrangement.Center
+//        ) {
+//          Text(
+//            text = getStrPrice(stock.priceInCents),
+//            style = MaterialTheme.typography.titleMedium,
+//          )
+//        }
       }
 //      Box(
 //        modifier = Modifier
@@ -153,7 +167,7 @@ class Search {
 //            .padding(end = 48.dp), // TODO: remove this hack
 //        )
 //      }
-    }
+//    }
   }
 
   @Composable

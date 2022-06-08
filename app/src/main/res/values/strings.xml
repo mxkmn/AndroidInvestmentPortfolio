@@ -12,4 +12,8 @@
     <string name="cancel">Cancel</string>
     <string name="no_stocks">No stocks have been added yet</string>
     <string name="search_suggestion">Name or ticker</string>
+    <string name="unknown_country">unknown country</string>
+    <string name="clear_text">Clear text</string>
+    <string name="buy">bought</string>
+    <string name="buy2">-</string>
 </resources>

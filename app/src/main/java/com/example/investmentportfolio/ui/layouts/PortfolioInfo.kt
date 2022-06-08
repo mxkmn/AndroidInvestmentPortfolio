@@ -44,7 +44,7 @@ class PortfolioInfo {
       {},
       { portfolioStockCrossRef ->
         when (portfolioStockCrossRef) {
-          fakePortfolioStockCrossRef[0] -> Stock("Apple", "AAPL", 1234, "US")
+          fakePortfolioStockCrossRef[0] -> Stock("Apple", "AAPL", 1234, "Unknown")
           fakePortfolioStockCrossRef[1] -> Stock("AMD", "AMD", 8901, "US")
           else -> Stock("Qualcomm", "QCOM", 5678, "US")
         }
@@ -88,11 +88,13 @@ class PortfolioInfo {
           ) {
             ShowAlertDialog(isDialogOpen, portfolio, onRename)
             FlowRow(
-              Modifier.padding(8.dp, 8.dp, 8.dp, 8.dp).fillMaxWidth(),
+              Modifier
+                .padding(8.dp, 8.dp, 8.dp, 8.dp)
+                .fillMaxWidth(),
               mainAxisSpacing = 8.dp,
               mainAxisAlignment = MainAxisAlignment.Center,
             ) {
-              BeautifulAssistButton(stringResource(R.string.rename_portfolio), {isDialogOpen.value = true}/*onRenameClick*/, Icons.Outlined.Edit)
+              BeautifulAssistButton(stringResource(R.string.rename_portfolio), {isDialogOpen.value = true}, Icons.Outlined.Edit)
               BeautifulAssistButton(stringResource(R.string.delete_portfolio), onDeleteClick, Icons.Outlined.Delete)
             }
             if (portfolioStocks.isEmpty()) {
@@ -115,6 +117,8 @@ class PortfolioInfo {
     )
   }
 
+
+
   @Composable
   private fun StockCard(portfolioStock: PortfolioStockCrossRef, stock: Stock, onClick: (PortfolioStockCrossRef) -> Unit) {
     Card(
@@ -124,48 +128,52 @@ class PortfolioInfo {
       ),
       shape = MaterialTheme.shapes.extraLarge
     ) {
-      Row(
-        modifier = Modifier
+      Column(
+        Modifier
+          .fillMaxWidth()
           .padding(16.dp)
-          .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
       ) {
-        Column (
-//          verticalArrangement = Arrangement.Center,
-        ) {
-          Text(
-            text = stock.name,
-            style = MaterialTheme.typography.titleLarge,
-//            modifier = Modifier
-//              .align(Alignment.Start)
-//              .padding(end = 48.dp), // TODO: remove this hack
-          )
-          Text(
-            text = "$${stock.ticker}",
-            style = MaterialTheme.typography.titleSmall,
-//            modifier = Modifier
-//              .align(Alignment.Start)
-//              .padding(end = 48.dp), // TODO: remove this hack
-          )
-        }
-        Column (
-//          Modifier.fillMaxHeight(),
-//          verticalArrangement = Arrangement.Center
-        ) {
-          Text(
-            text = getStrPrice(stock.priceInCents),
-            style = MaterialTheme.typography.titleMedium,
-          )
-          Text(
-            text = "Куплено ${portfolioStock.stocksInPortfolio}",
-            style = MaterialTheme.typography.titleSmall,
-          )
-          Text(
-            text = "Страна ${stock.country}",
-            style = MaterialTheme.typography.titleSmall,
-          )
-        }
+        Text(
+          text = "${stock.name} (${if (stock.country == "Unknown") stringResource(R.string.unknown_country) else stock.country}) | $${stock.ticker}",
+          style = MaterialTheme.typography.titleLarge
+        )
+        Text(
+          text = "${getStrPrice(stock.priceInCents)} | ${stringResource(R.string.buy)} ${portfolioStock.stocksInPortfolio} ${stringResource(R.string.buy2)} ${getStrPrice(stock.priceInCents * portfolioStock.stocksInPortfolio)}",
+          style = MaterialTheme.typography.titleMedium
+        )
       }
+
+//      Row(
+//        modifier = Modifier
+//          .padding(16.dp)
+//          .fillMaxWidth(),
+//        horizontalArrangement = Arrangement.SpaceBetween,
+//      ) {
+//        Column {
+//          Text(
+//            text = stock.name,
+//            style = MaterialTheme.typography.titleLarge
+//          )
+//          Text(
+//            text = "$${stock.ticker}",
+//            style = MaterialTheme.typography.titleSmall
+//          )
+//        }
+//        Column {
+//          Text(
+//            text = getStrPrice(stock.priceInCents),
+//            style = MaterialTheme.typography.titleMedium,
+//          )
+//          Text(
+//            text = "Куплено ${portfolioStock.stocksInPortfolio}",
+//            style = MaterialTheme.typography.titleSmall,
+//          )
+//          Text(
+//            text = "Страна ${stock.country}",
+//            style = MaterialTheme.typography.titleSmall,
+//          )
+//        }
+//      }
     }
   }
 
@@ -198,7 +206,7 @@ class PortfolioInfo {
                 onClick = { nameInput.value = "" },
                 content = { Icon(
                   imageVector = Icons.Outlined.Clear,
-                  contentDescription = "Clear"
+                  contentDescription = stringResource(R.string.clear_text)
                 ) }
               ) },
               label = { Text(text = stringResource(R.string.name)) },
