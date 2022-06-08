@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Investment Portfolio</string>
+    <string name="all_portfolios">All portfolios</string>
+    <string name="add_portfolio">Add a Portfolio</string>
+    <string name="no_portfolios">No portfolios have been created yet</string>
+    <string name="db_error">Database connection error!</string>
+    <string name="stock_search">Stock Search</string>
+    <string name="delete_portfolio">Delete portfolio</string>
+    <string name="rename_portfolio">Rename</string>
+    <string name="name">Name</string>
+    <string name="save_name">Save name</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_stocks">No stocks have been added yet</string>
+    <string name="search_suggestion">Name or ticker</string>
+</resources>
