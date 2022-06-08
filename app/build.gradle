@@ -85,7 +85,6 @@ dependencies {
 //    implementation "androidx.navigation:navigation-ui-ktx:$navigation_version"
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
-    // говно
 //    implementation "io.github.raamcosta.compose-destinations:core:1.5.9-beta" // для перехода к другим layout
 //    ksp "io.github.raamcosta.compose-destinations:core:1.5.9-beta" // туда же
 

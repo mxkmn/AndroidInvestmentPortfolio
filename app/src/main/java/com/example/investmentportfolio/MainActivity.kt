@@ -60,12 +60,13 @@ class MainActivity : ComponentActivity() {
               BuildNavGraph(navController)
             }
           }
+          lifecycleScope.launch {
+            refreshPrices.updatedStocks.collect { stocks ->
+              db.updateStocks(stocks)
+            }
+          }
 
-          refreshPrices.refresh() // обновление цен акций и портфелей
-
-//          println("Портфели: ${db.getPortfolios()}")
-//          println("getStocks: ${db.getStocks()}")
-//          println("Cross: ${db.getPortfolioStocks()}")
+          refreshPrices.refresh(db.getStocks()) // обновление цен акций и портфелей
         }
         else if (it == false) {
           Toast.makeText(applicationContext, getText(R.string.db_error), Toast.LENGTH_LONG).show()
@@ -85,7 +86,9 @@ class MainActivity : ComponentActivity() {
         val isRefreshing by refreshPrices.isRefreshing.collectAsState()
 
         PortfoliosList().Window(portfolios, isRefreshing,
-          onRefresh = refreshPrices::refresh,
+          onRefresh = {
+            refreshPrices.refresh(db.getStocks())
+          },
           onAddNewPortfolioClick = { // при клике на кнопку снизу добавляем новый портфель
             db.addNewDefaultPortfolio()
           },
@@ -110,15 +113,26 @@ class MainActivity : ComponentActivity() {
 
         val stocks = db.getStocksInPortfolio(portfolioId)
 
+        var portfolioPrice: Long = 0
+        for (stock in stocks) {
+          val price = db.getStockById(stock.stockId)?.priceInCents ?: 0
+          portfolioPrice += price * stock.stocksInPortfolio
+        }
+        portfolio.priceInCents = portfolioPrice
+        db.updatePortfolio(portfolio)
+
+
         PortfolioInfo().Window(portfolio, stocks, isRefreshing,
-          onRefresh = refreshPrices::refresh,
+          onRefresh = {
+            refreshPrices.refresh(db.getStocks())
+         },
           onSearchClick = {
             navController.navigate(NavRoute.Search.withArgs(portfolioId.toString()))
           },
           onRename = {
             db.updatePortfolio(portfolio)
             navController.popBackStack()
-            navController.navigate(NavRoute.PortfolioInfo.withArgs(portfolio.id.toString()))
+            navController.navigate(NavRoute.PortfolioInfo.withArgs(portfolioId.toString()))
           },
           onDeleteClick = {
             db.deletePortfolio(portfolio)
@@ -127,8 +141,16 @@ class MainActivity : ComponentActivity() {
           stockGetter = { portfolioStockCrossRef: PortfolioStockCrossRef ->
             db.getStockById(portfolioStockCrossRef.stockId)
           },
-          onPortfolioStockClick = { portfolioStockCrossRef: PortfolioStockCrossRef ->
-//            navController.navigate(NavRoute.StockInfo.withArgs(stock.id.toString()))
+          onPortfolioStockChange = { portfolioStockCrossRef: PortfolioStockCrossRef, num: Int ->
+            portfolioStockCrossRef.stocksInPortfolio += num
+            if (portfolioStockCrossRef.stocksInPortfolio == 0) {
+              db.deletePortfolioStock(portfolioStockCrossRef)
+            }
+            else {
+              db.updatePortfolioStock(portfolioStockCrossRef)
+            }
+            navController.popBackStack()
+            navController.navigate(NavRoute.PortfolioInfo.withArgs(portfolioId.toString()))
           }
         )
       }

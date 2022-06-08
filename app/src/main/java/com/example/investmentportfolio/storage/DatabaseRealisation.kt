@@ -60,12 +60,15 @@ class DatabaseWorker(context: Context) : ViewModel() {
 //  fun getPortfolioStocks() = db.portfolioToStock().getAll()
 
   fun getStocks() = db.stock().getAll()
+  fun updateStocks(stocks: List<Stock>) = db.stock().update(stocks)
   fun getStocksInPortfolio(portfolioId: Int) = db.portfolioToStock().getAllByPortfolioId(portfolioId)
   fun getStockById(id: Int): Stock? {
     val stocks = db.stock().getById(id)
     return if (stocks.isEmpty()) null else stocks[0]
   }
   fun updatePortfolio(portfolio: Portfolio) = db.portfolio().update(portfolio)
+  fun updatePortfolioStock(portfolioStock: PortfolioStockCrossRef) = db.portfolioToStock().update(portfolioStock)
+  fun deletePortfolioStock(portfolioStock: PortfolioStockCrossRef) = db.portfolioToStock().delete(portfolioStock)
 
   val portfoliosLive = db.portfolio().fetchAll()
 
@@ -114,7 +117,7 @@ class DatabaseWorker(context: Context) : ViewModel() {
     val stockUsages = db.portfolioToStock().getAll()
 
     val unusedStocks = stocks.filter { stock ->
-      stockUsages.none { // TODO: проверить на правильность
+      stockUsages.none {
         it.stockId == stock.id
       }
     }

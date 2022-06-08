@@ -16,4 +16,7 @@
     <string name="clear_text">Clear text</string>
     <string name="buy">bought</string>
     <string name="buy2">-</string>
+    <string name="plus">Increase</string>
+    <string name="minus">Decrease</string>
+    <string name="delete">Delete</string>
 </resources>

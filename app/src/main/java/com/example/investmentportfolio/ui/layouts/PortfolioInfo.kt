@@ -49,7 +49,7 @@ class PortfolioInfo {
           else -> Stock("Qualcomm", "QCOM", 5678, "US")
         }
       },
-      {}
+      { _, _ -> }
     )
   }
 
@@ -60,7 +60,7 @@ class PortfolioInfo {
              onRename: (Portfolio) -> Unit,
              onDeleteClick: () -> Unit,
              stockGetter: (PortfolioStockCrossRef) -> Stock?,
-             onPortfolioStockClick: (PortfolioStockCrossRef) -> Unit
+             onPortfolioStockChange: (PortfolioStockCrossRef, Int) -> Unit
   ) {
     val isDialogOpen = remember { mutableStateOf(false)}
 
@@ -89,7 +89,7 @@ class PortfolioInfo {
             ShowAlertDialog(isDialogOpen, portfolio, onRename)
             FlowRow(
               Modifier
-                .padding(8.dp, 8.dp, 8.dp, 8.dp)
+                .padding(8.dp, 0.dp, 8.dp, 0.dp)
                 .fillMaxWidth(),
               mainAxisSpacing = 8.dp,
               mainAxisAlignment = MainAxisAlignment.Center,
@@ -106,7 +106,7 @@ class PortfolioInfo {
                   val stock = stockGetter(portfolioStock)
                   if (stock != null) {
 //                    Text(text = stock.toString())
-                    StockCard(portfolioStock, stock, onPortfolioStockClick)
+                    StockCard(portfolioStock, stock, onPortfolioStockChange)
                   }
                 }
               }
@@ -120,7 +120,7 @@ class PortfolioInfo {
 
 
   @Composable
-  private fun StockCard(portfolioStock: PortfolioStockCrossRef, stock: Stock, onClick: (PortfolioStockCrossRef) -> Unit) {
+  private fun StockCard(portfolioStock: PortfolioStockCrossRef, stock: Stock, changeNumOfStocks: (PortfolioStockCrossRef, Int) -> Unit) {
     Card(
       modifier = Modifier.padding(16.dp, 8.dp, 16.dp, 8.dp),
       colors = CardDefaults.cardColors(
@@ -141,6 +141,21 @@ class PortfolioInfo {
           text = "${getStrPrice(stock.priceInCents)} | ${stringResource(R.string.buy)} ${portfolioStock.stocksInPortfolio} ${stringResource(R.string.buy2)} ${getStrPrice(stock.priceInCents * portfolioStock.stocksInPortfolio)}",
           style = MaterialTheme.typography.titleMedium
         )
+        FlowRow(
+          Modifier
+            .padding(8.dp, 8.dp, 8.dp, 8.dp)
+            .fillMaxWidth(),
+          mainAxisSpacing = 8.dp,
+          mainAxisAlignment = MainAxisAlignment.Center,
+        ) {
+          if (portfolioStock.stocksInPortfolio == 1) {
+            BeautifulAssistButton(stringResource(R.string.delete), {changeNumOfStocks(portfolioStock, -1)})
+          }
+          else {
+            BeautifulAssistButton(stringResource(R.string.minus), {changeNumOfStocks(portfolioStock, -1)})
+          }
+          BeautifulAssistButton(stringResource(R.string.plus), {changeNumOfStocks(portfolioStock, 1)})
+        }
       }
 
 //      Row(
@@ -218,7 +233,6 @@ class PortfolioInfo {
 
             Row(
               Modifier.padding(8.dp, 8.dp, 8.dp, 8.dp),
-//              mainAxisSpacing = 16.dp,
 //              mainAxisAlignment = MainAxisAlignment.Center,
             ) {
               BeautifulAssistButton(stringResource(R.string.cancel), {
@@ -260,7 +274,7 @@ class PortfolioInfo {
   @Composable
   fun BeautifulAssistButton(text: String, onClick: () -> Unit, image: ImageVector? = null) {
     AssistChip(
-      modifier = Modifier.padding(8.dp),
+      modifier = Modifier.padding(0.dp, 8.dp, 0.dp, 8.dp),
       onClick = onClick,
       colors = AssistChipDefaults.assistChipColors(
         leadingIconContentColor = MaterialTheme.colorScheme.onSurfaceVariant

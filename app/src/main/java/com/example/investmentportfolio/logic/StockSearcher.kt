@@ -49,9 +49,9 @@ class StockSearcher : ViewModel() { // viewmodel тут для возможно�
   }
 
   fun searchStocksByString(searchQuery: String) {
-//    if (_isSearching.value) { // выход, если уже обновляется
-//      return
-//    }
+    if (_isSearching.value) { // выход, если уже обновляется
+      return
+    }
     viewModelScope.launch {
       _isSearching.emit(true)
     }
